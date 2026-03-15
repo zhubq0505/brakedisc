@@ -22,6 +22,12 @@
         .btn-secondary:hover { background: #5a6268; }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
         .table-wrapper { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .pagination button { padding: 8px 16px; border: 1px solid #e0e0e0; background: white; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .pagination button:hover:not(:disabled) { background: #667eea; color: white; border-color: #667eea; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination .page-info { color: #6c757d; font-size: 14px; }
+        .page-size-select { padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; min-width: 1800px; }
         th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; white-space: nowrap; }
         th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; position: sticky; top: 0; font-size: 12px; }
@@ -140,6 +146,20 @@
                 <tbody id="tableBody"></tbody>
             </table>
         </div>
+
+        <div class="pagination" id="pagination">
+            <button onclick="goToPage(0)" id="firstBtn">首页</button>
+            <button onclick="goToPage(currentPage - 1)" id="prevBtn">上一页</button>
+            <span class="page-info" id="pageInfo">第 1 页 / 共 1 页</span>
+            <button onclick="goToPage(currentPage + 1)" id="nextBtn">下一页</button>
+            <button onclick="goToPage(totalPages - 1)" id="lastBtn">末页</button>
+            <select class="page-size-select" onchange="changePageSize(this.value)">
+                <option value="10">10条/页</option>
+                <option value="20" selected>20条/页</option>
+                <option value="50">50条/页</option>
+                <option value="100">100条/页</option>
+            </select>
+        </div>
     </div>
 
     <div class="modal" id="modal">
@@ -252,12 +272,30 @@
 
     <script>
         const API_BASE = '/api/brake-discs';
+        let currentPage = 0;
+        let pageSize = 20;
+        let totalPages = 0;
+        let totalItems = 0;
+        let currentKeyword = '';
 
-        async function loadData(keyword = '') {
-            const url = keyword ? `${API_BASE}?keyword=${encodeURIComponent(keyword)}` : API_BASE;
+        async function loadData(keyword = currentKeyword, page = currentPage, size = pageSize) {
+            currentKeyword = keyword;
+            currentPage = page;
+            pageSize = size;
+
+            let url = `${API_BASE}?page=${page}&size=${size}`;
+            if (keyword) {
+                url += `&keyword=${encodeURIComponent(keyword)}`;
+            }
+
             const res = await fetch(url);
             const data = await res.json();
-            renderTable(data);
+
+            totalPages = data.totalPages;
+            totalItems = data.totalItems;
+
+            renderTable(data.content);
+            updatePagination();
         }
 
         function renderTable(data) {
@@ -293,9 +331,28 @@
             `).join('');
         }
 
+        function updatePagination() {
+            document.getElementById('pageInfo').textContent = `第 ${currentPage + 1} 页 / 共 ${totalPages} 页（共 ${totalItems} 条）`;
+            document.getElementById('firstBtn').disabled = currentPage === 0;
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages - 1;
+            document.getElementById('lastBtn').disabled = currentPage >= totalPages - 1;
+        }
+
+        function goToPage(page) {
+            if (page >= 0 && page < totalPages) {
+                loadData(currentKeyword, page, pageSize);
+            }
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size);
+            loadData(currentKeyword, 0, pageSize);
+        }
+
         function search() {
             const keyword = document.getElementById('searchInput').value;
-            loadData(keyword);
+            loadData(keyword, 0, pageSize);
         }
 
         function showAddModal() {
@@ -435,7 +492,7 @@
         async function deleteItem(id) {
             if (!confirm('确定要删除这条记录吗？')) return;
             await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-            loadData();
+            loadData(currentKeyword, currentPage, pageSize);
         }
 
         async function importExcel() {

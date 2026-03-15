@@ -5,6 +5,10 @@ import com.example.demo.repository.BrakeDiscRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +29,11 @@ public class BrakeDiscService {
         return repository.findAll();
     }
 
+    public Page<BrakeDisc> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        return repository.findAll(pageable);
+    }
+
     public Optional<BrakeDisc> findById(Long id) {
         return repository.findById(id);
     }
@@ -34,6 +43,14 @@ public class BrakeDiscService {
             return findAll();
         }
         return repository.search(keyword);
+    }
+
+    public Page<BrakeDisc> searchPageable(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return repository.findAll(pageable);
+        }
+        return repository.searchPageable(keyword, pageable);
     }
 
     @Transactional
