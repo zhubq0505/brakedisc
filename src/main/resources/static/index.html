@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刹车盘管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 15px; background: #f0f2f5; }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 { color: #1a1a1a; margin-bottom: 15px; font-size: 22px; }
+        .toolbar { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .toolbar input { padding: 10px 14px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; flex: 1; min-width: 180px; }
+        .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .btn-success:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4); }
+        .btn-danger { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; }
+        .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(235, 51, 73, 0.4); }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .table-wrapper { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        table { width: 100%; border-collapse: collapse; min-width: 1800px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; white-space: nowrap; }
+        th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; position: sticky; top: 0; font-size: 12px; }
+        tr:hover { background: #f8f9fa; }
+        tr:nth-child(even) { background: #fafafa; }
+        tr:nth-child(even):hover { background: #f8f9fa; }
+        .actions { display: flex; gap: 6px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 950px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-content h2 { margin-bottom: 20px; font-size: 20px; color: #1a1a1a; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .form-group { margin-bottom: 0; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: #495057; font-size: 12px; }
+        .form-group input { width: 100%; padding: 9px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+        .form-group input:focus { outline: none; border-color: #667eea; }
+        .form-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .form-section h3 { font-size: 14px; color: #667eea; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #667eea; display: inline-block; }
+        .modal-footer { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }
+        .file-upload { display: flex; align-items: center; gap: 10px; }
+        .file-upload input[type="file"] { display: none; }
+        .detail-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1001; padding: 15px; }
+        .detail-modal.show { display: flex; }
+        .detail-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 1000px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .detail-content h2 { margin-bottom: 20px; font-size: 20px; color: #1a1a1a; }
+        .detail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .detail-item { padding: 12px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; }
+        .detail-label { font-size: 11px; color: #6c757d; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-value { font-size: 14px; font-weight: 600; word-break: break-all; color: #1a1a1a; }
+
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            h1 { font-size: 18px; margin-bottom: 12px; }
+            .toolbar { padding: 12px; gap: 8px; }
+            .toolbar input { min-width: 100%; order: -1; }
+            .btn { padding: 8px 14px; font-size: 13px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .detail-grid { grid-template-columns: repeat(2, 1fr); }
+            .modal-content, .detail-content { padding: 20px; border-radius: 12px; }
+            table { min-width: 1600px; }
+            th, td { padding: 8px 10px; font-size: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .detail-grid { grid-template-columns: 1fr; }
+            .btn { padding: 7px 12px; font-size: 12px; }
+        }
+
+        /* 列宽优化 */
+        td:nth-child(1), th:nth-child(1) { width: 60px; min-width: 60px; }
+        td:nth-child(2), th:nth-child(2) { width: 100px; min-width: 100px; }
+        td:nth-child(3), th:nth-child(3) { width: 90px; min-width: 90px; }
+        td:nth-child(4), th:nth-child(4) { width: 90px; min-width: 90px; }
+        td:nth-child(5), th:nth-child(5) { width: 80px; min-width: 80px; }
+        td:nth-child(6), th:nth-child(6) { width: 70px; min-width: 70px; }
+        td:nth-child(7), th:nth-child(7) { width: 70px; min-width: 70px; }
+        td:nth-child(8), th:nth-child(8) { width: 90px; min-width: 90px; }
+        td:nth-child(9), th:nth-child(9) { width: 80px; min-width: 80px; }
+        td:nth-child(10), th:nth-child(10) { width: 70px; min-width: 70px; }
+        td:nth-child(11), th:nth-child(11) { width: 70px; min-width: 70px; }
+        td:nth-child(12), th:nth-child(12) { width: 70px; min-width: 70px; }
+        td:nth-child(13), th:nth-child(13) { width: 80px; min-width: 80px; }
+        td:nth-child(14), th:nth-child(14) { width: 90px; min-width: 90px; }
+        td:nth-child(15), th:nth-child(15) { width: 100px; min-width: 100px; }
+        td:nth-child(16), th:nth-child(16) { width: 100px; min-width: 100px; }
+        td:nth-child(17), th:nth-child(17) { width: 100px; min-width: 100px; }
+        td:nth-child(18), th:nth-child(18) { width: 90px; min-width: 90px; }
+        td:nth-child(19), th:nth-child(19) { width: 90px; min-width: 90px; }
+        td:nth-child(20), th:nth-child(20) { width: 100px; min-width: 100px; }
+        td:nth-child(21), th:nth-child(21) { width: 180px; min-width: 180px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 刹车盘管理系统</h1>
+
+        <div class="toolbar">
+            <input type="text" id="searchInput" class="search-box" placeholder="搜索编号、OE号、EK编码...">
+            <button class="btn btn-primary" onclick="search()">搜索</button>
+            <button class="btn btn-success" onclick="showAddModal()">添加产品</button>
+            <div class="file-upload">
+                <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="importExcel()">
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">导入Excel</button>
+            </div>
+            <button class="btn btn-secondary" onclick="loadData()">刷新</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>编号</th>
+                        <th>车系</th>
+                        <th>车型</th>
+                        <th>位置</th>
+                        <th>类型</th>
+                        <th>重量</th>
+                        <th>表面处理</th>
+                        <th>工艺</th>
+                        <th>大外圆</th>
+                        <th>总高</th>
+                        <th>刹厚</th>
+                        <th>中心孔</th>
+                        <th>安装孔</th>
+                        <th>OE1</th>
+                        <th>OE2</th>
+                        <th>OE3</th>
+                        <th>25EK</th>
+                        <th>EK1</th>
+                        <th>胜地编码</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">添加产品</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+
+                <div class="form-section">
+                    <h3>基本信息</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>编号</label>
+                            <input type="text" id="code" required>
+                        </div>
+                        <div class="form-group">
+                            <label>车系</label>
+                            <input type="text" id="carSeries">
+                        </div>
+                        <div class="form-group">
+                            <label>车型</label>
+                            <input type="text" id="carModel">
+                        </div>
+                        <div class="form-group">
+                            <label>位置</label>
+                            <input type="text" id="position">
+                        </div>
+                        <div class="form-group">
+                            <label>类型</label>
+                            <input type="text" id="type">
+                        </div>
+                        <div class="form-group">
+                            <label>重量</label>
+                            <input type="number" step="0.01" id="weight">
+                        </div>
+                        <div class="form-group">
+                            <label>表面处理</label>
+                            <input type="text" id="surfaceTreatment">
+                        </div>
+                        <div class="form-group">
+                            <label>工艺</label>
+                            <input type="text" id="process">
+                        </div>
+                        <div class="form-group">
+                            <label>大外圆</label>
+                            <input type="number" step="0.1" id="outerDiameter">
+                        </div>
+                        <div class="form-group">
+                            <label>总高</label>
+                            <input type="number" step="0.1" id="totalHeight">
+                        </div>
+                        <div class="form-group">
+                            <label>刹厚</label>
+                            <input type="number" step="0.1" id="brakeThickness">
+                        </div>
+                        <div class="form-group">
+                            <label>中心孔</label>
+                            <input type="number" step="0.1" id="centerHole">
+                        </div>
+                        <div class="form-group">
+                            <label>安装孔</label>
+                            <input type="text" id="mountingHole">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>OE 号</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>OE1</label><input type="text" id="oe1"></div>
+                        <div class="form-group"><label>OE2</label><input type="text" id="oe2"></div>
+                        <div class="form-group"><label>OE3</label><input type="text" id="oe3"></div>
+                        <div class="form-group"><label>OE4</label><input type="text" id="oe4"></div>
+                        <div class="form-group"><label>OE5</label><input type="text" id="oe5"></div>
+                        <div class="form-group"><label>OE6</label><input type="text" id="oe6"></div>
+                        <div class="form-group"><label>OE7</label><input type="text" id="oe7"></div>
+                        <div class="form-group"><label>OE8</label><input type="text" id="oe8"></div>
+                        <div class="form-group"><label>OE9</label><input type="text" id="oe9"></div>
+                        <div class="form-group"><label>OE10</label><input type="text" id="oe10"></div>
+                        <div class="form-group"><label>OE11</label><input type="text" id="oe11"></div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>其他编码</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label>25EK编码</label><input type="text" id="ek25"></div>
+                        <div class="form-group"><label>EK1</label><input type="text" id="ek1"></div>
+                        <div class="form-group"><label>胜地编码</label><input type="text" id="shengdiCode"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="detail-modal" id="detailModal">
+        <div class="detail-content">
+            <h2>产品详情</h2>
+            <div id="detailContent"></div>
+            <div class="modal-footer" style="margin-top: 20px;">
+                <button type="button" class="btn btn-secondary" onclick="hideDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/brake-discs';
+
+        async function loadData(keyword = '') {
+            const url = keyword ? `${API_BASE}?keyword=${encodeURIComponent(keyword)}` : API_BASE;
+            const res = await fetch(url);
+            const data = await res.json();
+            renderTable(data);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.id}</td>
+                    <td><strong>${item.code || ''}</strong></td>
+                    <td>${item.carSeries || ''}</td>
+                    <td>${item.carModel || ''}</td>
+                    <td>${item.position || ''}</td>
+                    <td>${item.type || ''}</td>
+                    <td>${item.weight || ''}</td>
+                    <td>${item.surfaceTreatment || ''}</td>
+                    <td>${item.process || ''}</td>
+                    <td>${item.outerDiameter || ''}</td>
+                    <td>${item.totalHeight || ''}</td>
+                    <td>${item.brakeThickness || ''}</td>
+                    <td>${item.centerHole || ''}</td>
+                    <td>${item.mountingHole || ''}</td>
+                    <td>${item.oe1 || ''}</td>
+                    <td>${item.oe2 || ''}</td>
+                    <td>${item.oe3 || ''}</td>
+                    <td>${item.ek25 || ''}</td>
+                    <td>${item.ek1 || ''}</td>
+                    <td>${item.shengdiCode || ''}</td>
+                    <td class="actions">
+                        <button class="btn btn-primary btn-sm" onclick="showDetailModal(${item.id})">详情</button>
+                        <button class="btn btn-primary btn-sm" onclick="showEditModal(${item.id})">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function search() {
+            const keyword = document.getElementById('searchInput').value;
+            loadData(keyword);
+        }
+
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = '添加产品';
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        async function showEditModal(id) {
+            const res = await fetch(`${API_BASE}/${id}`);
+            const item = await res.json();
+            document.getElementById('modalTitle').textContent = '编辑产品';
+            document.getElementById('productId').value = item.id;
+            document.getElementById('code').value = item.code || '';
+            document.getElementById('carSeries').value = item.carSeries || '';
+            document.getElementById('carModel').value = item.carModel || '';
+            document.getElementById('position').value = item.position || '';
+            document.getElementById('type').value = item.type || '';
+            document.getElementById('weight').value = item.weight || '';
+            document.getElementById('surfaceTreatment').value = item.surfaceTreatment || '';
+            document.getElementById('process').value = item.process || '';
+            document.getElementById('outerDiameter').value = item.outerDiameter || '';
+            document.getElementById('totalHeight').value = item.totalHeight || '';
+            document.getElementById('brakeThickness').value = item.brakeThickness || '';
+            document.getElementById('centerHole').value = item.centerHole || '';
+            document.getElementById('mountingHole').value = item.mountingHole || '';
+            document.getElementById('oe1').value = item.oe1 || '';
+            document.getElementById('oe2').value = item.oe2 || '';
+            document.getElementById('oe3').value = item.oe3 || '';
+            document.getElementById('oe4').value = item.oe4 || '';
+            document.getElementById('oe5').value = item.oe5 || '';
+            document.getElementById('oe6').value = item.oe6 || '';
+            document.getElementById('oe7').value = item.oe7 || '';
+            document.getElementById('oe8').value = item.oe8 || '';
+            document.getElementById('oe9').value = item.oe9 || '';
+            document.getElementById('oe10').value = item.oe10 || '';
+            document.getElementById('oe11').value = item.oe11 || '';
+            document.getElementById('ek25').value = item.ek25 || '';
+            document.getElementById('ek1').value = item.ek1 || '';
+            document.getElementById('shengdiCode').value = item.shengdiCode || '';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        async function showDetailModal(id) {
+            const res = await fetch(`${API_BASE}/${id}`);
+            const item = await res.json();
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                <div class="detail-grid">
+                    <div class="detail-item"><div class="detail-label">编号</div><div class="detail-value">${item.code || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">车系</div><div class="detail-value">${item.carSeries || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">车型</div><div class="detail-value">${item.carModel || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">位置</div><div class="detail-value">${item.position || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">类型</div><div class="detail-value">${item.type || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">重量</div><div class="detail-value">${item.weight || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">表面处理</div><div class="detail-value">${item.surfaceTreatment || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">工艺</div><div class="detail-value">${item.process || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">大外圆</div><div class="detail-value">${item.outerDiameter || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">总高</div><div class="detail-value">${item.totalHeight || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">刹厚</div><div class="detail-value">${item.brakeThickness || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">中心孔</div><div class="detail-value">${item.centerHole || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">安装孔</div><div class="detail-value">${item.mountingHole || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE1</div><div class="detail-value">${item.oe1 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE2</div><div class="detail-value">${item.oe2 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE3</div><div class="detail-value">${item.oe3 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE4</div><div class="detail-value">${item.oe4 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE5</div><div class="detail-value">${item.oe5 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE6</div><div class="detail-value">${item.oe6 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE7</div><div class="detail-value">${item.oe7 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE8</div><div class="detail-value">${item.oe8 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE9</div><div class="detail-value">${item.oe9 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE10</div><div class="detail-value">${item.oe10 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">OE11</div><div class="detail-value">${item.oe11 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">25EK编码</div><div class="detail-value">${item.ek25 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">EK1</div><div class="detail-value">${item.ek1 || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">胜地编码</div><div class="detail-value">${item.shengdiCode || '-'}</div></div>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function hideDetailModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const data = {
+                code: document.getElementById('code').value,
+                carSeries: document.getElementById('carSeries').value,
+                carModel: document.getElementById('carModel').value,
+                position: document.getElementById('position').value,
+                type: document.getElementById('type').value,
+                weight: document.getElementById('weight').value ? parseFloat(document.getElementById('weight').value) : null,
+                surfaceTreatment: document.getElementById('surfaceTreatment').value,
+                process: document.getElementById('process').value,
+                outerDiameter: document.getElementById('outerDiameter').value ? parseFloat(document.getElementById('outerDiameter').value) : null,
+                totalHeight: document.getElementById('totalHeight').value ? parseFloat(document.getElementById('totalHeight').value) : null,
+                brakeThickness: document.getElementById('brakeThickness').value ? parseFloat(document.getElementById('brakeThickness').value) : null,
+                centerHole: document.getElementById('centerHole').value ? parseFloat(document.getElementById('centerHole').value) : null,
+                mountingHole: document.getElementById('mountingHole').value,
+                oe1: document.getElementById('oe1').value,
+                oe2: document.getElementById('oe2').value,
+                oe3: document.getElementById('oe3').value,
+                oe4: document.getElementById('oe4').value,
+                oe5: document.getElementById('oe5').value,
+                oe6: document.getElementById('oe6').value,
+                oe7: document.getElementById('oe7').value,
+                oe8: document.getElementById('oe8').value,
+                oe9: document.getElementById('oe9').value,
+                oe10: document.getElementById('oe10').value,
+                oe11: document.getElementById('oe11').value,
+                ek25: document.getElementById('ek25').value,
+                ek1: document.getElementById('ek1').value,
+                shengdiCode: document.getElementById('shengdiCode').value
+            };
+
+            const url = id ? `${API_BASE}/${id}` : API_BASE;
+            const method = id ? 'PUT' : 'POST';
+
+            await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            hideModal();
+            loadData();
+        });
+
+        async function deleteItem(id) {
+            if (!confirm('确定要删除这条记录吗？')) return;
+            await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+            loadData();
+        }
+
+        async function importExcel() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch(`${API_BASE}/import`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (res.ok) {
+                    alert('导入成功！');
+                    loadData();
+                } else {
+                    alert('导入失败！');
+                }
+            } catch (e) {
+                alert('导入失败：' + e.message);
+            }
+
+            fileInput.value = '';
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
