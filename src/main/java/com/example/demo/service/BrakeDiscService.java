@@ -92,8 +92,23 @@ public class BrakeDiscService {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                BrakeDisc disc = new BrakeDisc();
-                disc.setCode(getCellValueAsString(row.getCell(0)));
+                String code = getCellValueAsString(row.getCell(0));
+                if (code == null || code.trim().isEmpty()) {
+                    continue;
+                }
+
+                // 检查编号是否已存在
+                List<BrakeDisc> existing = repository.findByCodeContaining(code);
+                BrakeDisc disc;
+                if (!existing.isEmpty()) {
+                    // 更新已有记录
+                    disc = existing.get(0);
+                } else {
+                    // 创建新记录
+                    disc = new BrakeDisc();
+                    disc.setCode(code);
+                }
+
                 disc.setCarSeries(getCellValueAsString(row.getCell(1)));
                 disc.setCarModel(getCellValueAsString(row.getCell(2)));
                 disc.setPosition(getCellValueAsString(row.getCell(3)));
