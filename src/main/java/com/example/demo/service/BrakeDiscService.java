@@ -61,7 +61,13 @@ public class BrakeDiscService {
     @Transactional
     public BrakeDisc update(Long id, BrakeDisc brakeDisc) {
         return repository.findById(id).map(existing -> {
-            existing.setCode(brakeDisc.getCode());
+            existing.setLxCode(brakeDisc.getLxCode());
+            existing.setPrice(brakeDisc.getPrice());
+            existing.setProfit(brakeDisc.getProfit());
+            existing.setDoubleMetalCode(brakeDisc.getDoubleMetalCode());
+            existing.setDoubleDiscPrice(brakeDisc.getDoubleDiscPrice());
+            existing.setDoubleDiscProfit(brakeDisc.getDoubleDiscProfit());
+            existing.setDoubleBrandAgentPrice(brakeDisc.getDoubleBrandAgentPrice());
             existing.setCarSeries(brakeDisc.getCarSeries());
             existing.setCarModel(brakeDisc.getCarModel());
             existing.setPosition(brakeDisc.getPosition());
@@ -88,6 +94,7 @@ public class BrakeDiscService {
             existing.setEk25(brakeDisc.getEk25());
             existing.setEk1(brakeDisc.getEk1());
             existing.setShengdiCode(brakeDisc.getShengdiCode());
+            existing.setShengdiCode2(brakeDisc.getShengdiCode2());
             return repository.save(existing);
         }).orElseThrow(() -> new RuntimeException("Record not found"));
     }
@@ -109,13 +116,13 @@ public class BrakeDiscService {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                String code = getCellValueAsString(row.getCell(0));
-                if (code == null || code.trim().isEmpty()) {
+                String lxCode = getCellValueAsString(row.getCell(0));
+                if (lxCode == null || lxCode.trim().isEmpty()) {
                     continue;
                 }
 
-                // 检查编号是否已存在
-                List<BrakeDisc> existing = repository.findByCodeContaining(code);
+                // 检查LX编号是否已存在
+                List<BrakeDisc> existing = repository.findByLxCodeContaining(lxCode);
                 BrakeDisc disc;
                 if (!existing.isEmpty()) {
                     // 更新已有记录
@@ -123,35 +130,42 @@ public class BrakeDiscService {
                 } else {
                     // 创建新记录
                     disc = new BrakeDisc();
-                    disc.setCode(code);
+                    disc.setLxCode(lxCode);
                 }
 
-                disc.setCarSeries(getCellValueAsString(row.getCell(1)));
-                disc.setCarModel(getCellValueAsString(row.getCell(2)));
-                disc.setPosition(getCellValueAsString(row.getCell(3)));
-                disc.setType(getCellValueAsString(row.getCell(4)));
-                disc.setWeight(getCellValueAsDouble(row.getCell(5)));
-                disc.setSurfaceTreatment(getCellValueAsString(row.getCell(6)));
-                disc.setProcess(getCellValueAsString(row.getCell(7)));
-                disc.setOuterDiameter(getCellValueAsDouble(row.getCell(8)));
-                disc.setTotalHeight(getCellValueAsDouble(row.getCell(9)));
-                disc.setBrakeThickness(getCellValueAsDouble(row.getCell(10)));
-                disc.setCenterHole(getCellValueAsDouble(row.getCell(11)));
-                disc.setMountingHole(getCellValueAsString(row.getCell(12)));
-                disc.setOe1(getCellValueAsString(row.getCell(13)));
-                disc.setOe2(getCellValueAsString(row.getCell(14)));
-                disc.setOe3(getCellValueAsString(row.getCell(15)));
-                disc.setOe4(getCellValueAsString(row.getCell(16)));
-                disc.setOe5(getCellValueAsString(row.getCell(17)));
-                disc.setOe6(getCellValueAsString(row.getCell(18)));
-                disc.setOe7(getCellValueAsString(row.getCell(19)));
-                disc.setOe8(getCellValueAsString(row.getCell(20)));
-                disc.setOe9(getCellValueAsString(row.getCell(21)));
-                disc.setOe10(getCellValueAsString(row.getCell(22)));
-                disc.setOe11(getCellValueAsString(row.getCell(23)));
-                disc.setEk25(getCellValueAsString(row.getCell(24)));
-                disc.setEk1(getCellValueAsString(row.getCell(25)));
-                disc.setShengdiCode(getCellValueAsString(row.getCell(26)));
+                disc.setPrice(getCellValueAsDouble(row.getCell(1)));
+                disc.setProfit(getCellValueAsDouble(row.getCell(2)));
+                disc.setDoubleMetalCode(getCellValueAsString(row.getCell(3)));
+                disc.setDoubleDiscPrice(getCellValueAsDouble(row.getCell(4)));
+                disc.setDoubleDiscProfit(getCellValueAsDouble(row.getCell(5)));
+                disc.setDoubleBrandAgentPrice(getCellValueAsDouble(row.getCell(6)));
+                disc.setCarSeries(getCellValueAsString(row.getCell(7)));
+                disc.setCarModel(getCellValueAsString(row.getCell(8)));
+                disc.setPosition(getCellValueAsString(row.getCell(9)));
+                disc.setType(getCellValueAsString(row.getCell(10)));
+                disc.setWeight(getCellValueAsDouble(row.getCell(11)));
+                disc.setSurfaceTreatment(getCellValueAsString(row.getCell(12)));
+                disc.setProcess(getCellValueAsString(row.getCell(13)));
+                disc.setOuterDiameter(getCellValueAsDouble(row.getCell(14)));
+                disc.setTotalHeight(getCellValueAsDouble(row.getCell(15)));
+                disc.setBrakeThickness(getCellValueAsDouble(row.getCell(16)));
+                disc.setCenterHole(getCellValueAsDouble(row.getCell(17)));
+                disc.setMountingHole(getCellValueAsString(row.getCell(18)));
+                disc.setOe1(getCellValueAsString(row.getCell(19)));
+                disc.setOe2(getCellValueAsString(row.getCell(20)));
+                disc.setOe3(getCellValueAsString(row.getCell(21)));
+                disc.setOe4(getCellValueAsString(row.getCell(22)));
+                disc.setOe5(getCellValueAsString(row.getCell(23)));
+                disc.setOe6(getCellValueAsString(row.getCell(24)));
+                disc.setOe7(getCellValueAsString(row.getCell(25)));
+                disc.setOe8(getCellValueAsString(row.getCell(26)));
+                disc.setOe9(getCellValueAsString(row.getCell(27)));
+                disc.setOe10(getCellValueAsString(row.getCell(28)));
+                disc.setOe11(getCellValueAsString(row.getCell(29)));
+                disc.setEk25(getCellValueAsString(row.getCell(30)));
+                disc.setEk1(getCellValueAsString(row.getCell(31)));
+                disc.setShengdiCode(getCellValueAsString(row.getCell(32)));
+                disc.setShengdiCode2(getCellValueAsString(row.getCell(33)));
 
                 discs.add(repository.save(disc));
             }

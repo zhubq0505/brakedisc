@@ -20,6 +20,21 @@
         .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(235, 51, 73, 0.4); }
         .btn-secondary { background: #6c757d; color: white; }
         .btn-secondary:hover { background: #5a6268; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         .btn-sm { padding: 6px 12px; font-size: 12px; }
         .table-wrapper { overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -28,7 +43,7 @@
         .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
         .pagination .page-info { color: #6c757d; font-size: 14px; }
         .page-size-select { padding: 8px 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1800px; }
+        table { width: 100%; border-collapse: collapse; min-width: 2400px; }
         th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; white-space: nowrap; }
         th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; position: sticky; top: 0; font-size: 12px; }
         tr:hover { background: #f8f9fa; }
@@ -79,33 +94,40 @@
 
         /* 列宽优化 */
         td:nth-child(1), th:nth-child(1) { width: 60px; min-width: 60px; }
-        td:nth-child(2), th:nth-child(2) { width: 100px; min-width: 100px; }
-        td:nth-child(3), th:nth-child(3) { width: 90px; min-width: 90px; }
-        td:nth-child(4), th:nth-child(4) { width: 90px; min-width: 90px; }
-        td:nth-child(5), th:nth-child(5) { width: 80px; min-width: 80px; }
-        td:nth-child(6), th:nth-child(6) { width: 70px; min-width: 70px; }
-        td:nth-child(7), th:nth-child(7) { width: 70px; min-width: 70px; }
-        td:nth-child(8), th:nth-child(8) { width: 90px; min-width: 90px; }
+        td:nth-child(2), th:nth-child(2) { width: 90px; min-width: 90px; }
+        td:nth-child(3), th:nth-child(3) { width: 70px; min-width: 70px; }
+        td:nth-child(4), th:nth-child(4) { width: 70px; min-width: 70px; }
+        td:nth-child(5), th:nth-child(5) { width: 90px; min-width: 90px; }
+        td:nth-child(6), th:nth-child(6) { width: 80px; min-width: 80px; }
+        td:nth-child(7), th:nth-child(7) { width: 90px; min-width: 90px; }
+        td:nth-child(8), th:nth-child(8) { width: 100px; min-width: 100px; }
         td:nth-child(9), th:nth-child(9) { width: 80px; min-width: 80px; }
-        td:nth-child(10), th:nth-child(10) { width: 70px; min-width: 70px; }
+        td:nth-child(10), th:nth-child(10) { width: 90px; min-width: 90px; }
         td:nth-child(11), th:nth-child(11) { width: 70px; min-width: 70px; }
         td:nth-child(12), th:nth-child(12) { width: 70px; min-width: 70px; }
-        td:nth-child(13), th:nth-child(13) { width: 80px; min-width: 80px; }
-        td:nth-child(14), th:nth-child(14) { width: 90px; min-width: 90px; }
-        td:nth-child(15), th:nth-child(15) { width: 90px; min-width: 90px; }
-        td:nth-child(16), th:nth-child(16) { width: 90px; min-width: 90px; }
-        td:nth-child(17), th:nth-child(17) { width: 90px; min-width: 90px; }
-        td:nth-child(18), th:nth-child(18) { width: 90px; min-width: 90px; }
-        td:nth-child(19), th:nth-child(19) { width: 90px; min-width: 90px; }
-        td:nth-child(20), th:nth-child(20) { width: 90px; min-width: 90px; }
+        td:nth-child(13), th:nth-child(13) { width: 70px; min-width: 70px; }
+        td:nth-child(14), th:nth-child(14) { width: 80px; min-width: 80px; }
+        td:nth-child(15), th:nth-child(15) { width: 70px; min-width: 70px; }
+        td:nth-child(16), th:nth-child(16) { width: 70px; min-width: 70px; }
+        td:nth-child(17), th:nth-child(17) { width: 70px; min-width: 70px; }
+        td:nth-child(18), th:nth-child(18) { width: 70px; min-width: 70px; }
+        td:nth-child(19), th:nth-child(19) { width: 70px; min-width: 70px; }
+        td:nth-child(20), th:nth-child(20) { width: 80px; min-width: 80px; }
         td:nth-child(21), th:nth-child(21) { width: 90px; min-width: 90px; }
         td:nth-child(22), th:nth-child(22) { width: 90px; min-width: 90px; }
         td:nth-child(23), th:nth-child(23) { width: 90px; min-width: 90px; }
         td:nth-child(24), th:nth-child(24) { width: 90px; min-width: 90px; }
         td:nth-child(25), th:nth-child(25) { width: 90px; min-width: 90px; }
         td:nth-child(26), th:nth-child(26) { width: 90px; min-width: 90px; }
-        td:nth-child(27), th:nth-child(27) { width: 100px; min-width: 100px; }
-        td:nth-child(28), th:nth-child(28) { width: 180px; min-width: 180px; }
+        td:nth-child(27), th:nth-child(27) { width: 90px; min-width: 90px; }
+        td:nth-child(28), th:nth-child(28) { width: 90px; min-width: 90px; }
+        td:nth-child(29), th:nth-child(29) { width: 90px; min-width: 90px; }
+        td:nth-child(30), th:nth-child(30) { width: 90px; min-width: 90px; }
+        td:nth-child(31), th:nth-child(31) { width: 90px; min-width: 90px; }
+        td:nth-child(32), th:nth-child(32) { width: 90px; min-width: 90px; }
+        td:nth-child(33), th:nth-child(33) { width: 100px; min-width: 100px; }
+        td:nth-child(34), th:nth-child(34) { width: 100px; min-width: 100px; }
+        td:nth-child(35), th:nth-child(35) { width: 180px; min-width: 180px; }
     </style>
 </head>
 <body>
@@ -128,7 +150,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>编号</th>
+                        <th>LX编号</th>
+                        <th>Price</th>
+                        <th>Profit</th>
+                        <th>双金属编号</th>
+                        <th>双光盘价</th>
+                        <th>双光盘利润</th>
+                        <th>双品牌代理价</th>
                         <th>车系</th>
                         <th>车型</th>
                         <th>位置</th>
@@ -152,9 +180,10 @@
                         <th>OE9</th>
                         <th>OE10</th>
                         <th>OE11</th>
-                        <th>25EK</th>
+                        <th>25EK编码</th>
                         <th>EK1</th>
                         <th>胜地编码</th>
+                        <th>胜地编码2</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -187,8 +216,32 @@
                     <h3>基本信息</h3>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>编号</label>
-                            <input type="text" id="code" required>
+                            <label>LX编号</label>
+                            <input type="text" id="lxCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" step="0.01" id="price">
+                        </div>
+                        <div class="form-group">
+                            <label>Profit</label>
+                            <input type="number" step="0.001" id="profit">
+                        </div>
+                        <div class="form-group">
+                            <label>双金属编号</label>
+                            <input type="text" id="doubleMetalCode">
+                        </div>
+                        <div class="form-group">
+                            <label>双光盘价</label>
+                            <input type="number" step="0.01" id="doubleDiscPrice">
+                        </div>
+                        <div class="form-group">
+                            <label>双光盘利润</label>
+                            <input type="number" step="0.01" id="doubleDiscProfit">
+                        </div>
+                        <div class="form-group">
+                            <label>双品牌代理价</label>
+                            <input type="number" step="0.01" id="doubleBrandAgentPrice">
                         </div>
                         <div class="form-group">
                             <label>车系</label>
@@ -264,6 +317,7 @@
                         <div class="form-group"><label>25EK编码</label><input type="text" id="ek25"></div>
                         <div class="form-group"><label>EK1</label><input type="text" id="ek1"></div>
                         <div class="form-group"><label>胜地编码</label><input type="text" id="shengdiCode"></div>
+                        <div class="form-group"><label>胜地编码2</label><input type="text" id="shengdiCode2"></div>
                     </div>
                 </div>
 
@@ -318,18 +372,24 @@
             tbody.innerHTML = data.map(item => `
                 <tr>
                     <td>${item.id}</td>
-                    <td><strong>${item.code || ''}</strong></td>
+                    <td><strong>${item.lxCode || ''}</strong></td>
+                    <td>${item.price != null ? item.price.toFixed(2) : ''}</td>
+                    <td>${item.profit != null ? item.profit.toFixed(3) : ''}</td>
+                    <td>${item.doubleMetalCode || ''}</td>
+                    <td>${item.doubleDiscPrice != null ? item.doubleDiscPrice.toFixed(2) : ''}</td>
+                    <td>${item.doubleDiscProfit != null ? item.doubleDiscProfit.toFixed(2) : ''}</td>
+                    <td>${item.doubleBrandAgentPrice != null ? item.doubleBrandAgentPrice.toFixed(2) : ''}</td>
                     <td>${item.carSeries || ''}</td>
                     <td>${item.carModel || ''}</td>
                     <td>${item.position || ''}</td>
                     <td>${item.type || ''}</td>
-                    <td>${item.weight || ''}</td>
+                    <td>${item.weight != null ? item.weight.toFixed(2) : ''}</td>
                     <td>${item.surfaceTreatment || ''}</td>
                     <td>${item.process || ''}</td>
-                    <td>${item.outerDiameter || ''}</td>
-                    <td>${item.totalHeight || ''}</td>
-                    <td>${item.brakeThickness || ''}</td>
-                    <td>${item.centerHole || ''}</td>
+                    <td>${item.outerDiameter != null ? item.outerDiameter.toFixed(1) : ''}</td>
+                    <td>${item.totalHeight != null ? item.totalHeight.toFixed(1) : ''}</td>
+                    <td>${item.brakeThickness != null ? item.brakeThickness.toFixed(1) : ''}</td>
+                    <td>${item.centerHole != null ? item.centerHole.toFixed(1) : ''}</td>
                     <td>${item.mountingHole || ''}</td>
                     <td>${item.oe1 || ''}</td>
                     <td>${item.oe2 || ''}</td>
@@ -345,6 +405,7 @@
                     <td>${item.ek25 || ''}</td>
                     <td>${item.ek1 || ''}</td>
                     <td>${item.shengdiCode || ''}</td>
+                    <td>${item.shengdiCode2 || ''}</td>
                     <td class="actions">
                         <button class="btn btn-primary btn-sm" onclick="showDetailModal(${item.id})">详情</button>
                         <button class="btn btn-primary btn-sm" onclick="showEditModal(${item.id})">编辑</button>
@@ -390,7 +451,13 @@
             const item = await res.json();
             document.getElementById('modalTitle').textContent = '编辑产品';
             document.getElementById('productId').value = item.id;
-            document.getElementById('code').value = item.code || '';
+            document.getElementById('lxCode').value = item.lxCode || '';
+            document.getElementById('price').value = item.price || '';
+            document.getElementById('profit').value = item.profit || '';
+            document.getElementById('doubleMetalCode').value = item.doubleMetalCode || '';
+            document.getElementById('doubleDiscPrice').value = item.doubleDiscPrice || '';
+            document.getElementById('doubleDiscProfit').value = item.doubleDiscProfit || '';
+            document.getElementById('doubleBrandAgentPrice').value = item.doubleBrandAgentPrice || '';
             document.getElementById('carSeries').value = item.carSeries || '';
             document.getElementById('carModel').value = item.carModel || '';
             document.getElementById('position').value = item.position || '';
@@ -417,6 +484,7 @@
             document.getElementById('ek25').value = item.ek25 || '';
             document.getElementById('ek1').value = item.ek1 || '';
             document.getElementById('shengdiCode').value = item.shengdiCode || '';
+            document.getElementById('shengdiCode2').value = item.shengdiCode2 || '';
             document.getElementById('modal').classList.add('show');
         }
 
@@ -426,18 +494,24 @@
             const content = document.getElementById('detailContent');
             content.innerHTML = `
                 <div class="detail-grid">
-                    <div class="detail-item"><div class="detail-label">编号</div><div class="detail-value">${item.code || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">LX编号</div><div class="detail-value">${item.lxCode || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">Price</div><div class="detail-value">${item.price != null ? item.price.toFixed(2) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">Profit</div><div class="detail-value">${item.profit != null ? item.profit.toFixed(3) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">双金属编号</div><div class="detail-value">${item.doubleMetalCode || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">双光盘价</div><div class="detail-value">${item.doubleDiscPrice != null ? item.doubleDiscPrice.toFixed(2) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">双光盘利润</div><div class="detail-value">${item.doubleDiscProfit != null ? item.doubleDiscProfit.toFixed(2) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">双品牌代理价</div><div class="detail-value">${item.doubleBrandAgentPrice != null ? item.doubleBrandAgentPrice.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">车系</div><div class="detail-value">${item.carSeries || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">车型</div><div class="detail-value">${item.carModel || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">位置</div><div class="detail-value">${item.position || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">类型</div><div class="detail-value">${item.type || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">重量</div><div class="detail-value">${item.weight || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">重量</div><div class="detail-value">${item.weight != null ? item.weight.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">表面处理</div><div class="detail-value">${item.surfaceTreatment || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">工艺</div><div class="detail-value">${item.process || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">大外圆</div><div class="detail-value">${item.outerDiameter || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">总高</div><div class="detail-value">${item.totalHeight || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">刹厚</div><div class="detail-value">${item.brakeThickness || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">中心孔</div><div class="detail-value">${item.centerHole || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">大外圆</div><div class="detail-value">${item.outerDiameter != null ? item.outerDiameter.toFixed(1) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">总高</div><div class="detail-value">${item.totalHeight != null ? item.totalHeight.toFixed(1) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">刹厚</div><div class="detail-value">${item.brakeThickness != null ? item.brakeThickness.toFixed(1) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">中心孔</div><div class="detail-value">${item.centerHole != null ? item.centerHole.toFixed(1) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">安装孔</div><div class="detail-value">${item.mountingHole || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">OE1</div><div class="detail-value">${item.oe1 || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">OE2</div><div class="detail-value">${item.oe2 || '-'}</div></div>
@@ -453,6 +527,7 @@
                     <div class="detail-item"><div class="detail-label">25EK编码</div><div class="detail-value">${item.ek25 || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">EK1</div><div class="detail-value">${item.ek1 || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">胜地编码</div><div class="detail-value">${item.shengdiCode || '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">胜地编码2</div><div class="detail-value">${item.shengdiCode2 || '-'}</div></div>
                 </div>
             `;
             document.getElementById('detailModal').classList.add('show');
@@ -470,7 +545,13 @@
             e.preventDefault();
             const id = document.getElementById('productId').value;
             const data = {
-                code: document.getElementById('code').value,
+                lxCode: document.getElementById('lxCode').value,
+                price: document.getElementById('price').value ? parseFloat(document.getElementById('price').value) : null,
+                profit: document.getElementById('profit').value ? parseFloat(document.getElementById('profit').value) : null,
+                doubleMetalCode: document.getElementById('doubleMetalCode').value,
+                doubleDiscPrice: document.getElementById('doubleDiscPrice').value ? parseFloat(document.getElementById('doubleDiscPrice').value) : null,
+                doubleDiscProfit: document.getElementById('doubleDiscProfit').value ? parseFloat(document.getElementById('doubleDiscProfit').value) : null,
+                doubleBrandAgentPrice: document.getElementById('doubleBrandAgentPrice').value ? parseFloat(document.getElementById('doubleBrandAgentPrice').value) : null,
                 carSeries: document.getElementById('carSeries').value,
                 carModel: document.getElementById('carModel').value,
                 position: document.getElementById('position').value,
@@ -496,7 +577,8 @@
                 oe11: document.getElementById('oe11').value,
                 ek25: document.getElementById('ek25').value,
                 ek1: document.getElementById('ek1').value,
-                shengdiCode: document.getElementById('shengdiCode').value
+                shengdiCode: document.getElementById('shengdiCode').value,
+                shengdiCode2: document.getElementById('shengdiCode2').value
             };
 
             const url = id ? `${API_BASE}/${id}` : API_BASE;
@@ -523,6 +605,13 @@
             const file = fileInput.files[0];
             if (!file) return;
 
+            const importBtn = document.querySelector('.file-upload .btn');
+            const originalText = importBtn.innerHTML;
+            
+            // 显示 loading 状态
+            importBtn.disabled = true;
+            importBtn.innerHTML = '<span class="loading-spinner"></span>导入中...';
+
             const formData = new FormData();
             formData.append('file', file);
 
@@ -539,9 +628,12 @@
                 }
             } catch (e) {
                 alert('导入失败：' + e.message);
+            } finally {
+                // 恢复按钮状态
+                importBtn.disabled = false;
+                importBtn.innerHTML = originalText;
+                fileInput.value = '';
             }
-
-            fileInput.value = '';
         }
 
         loadData();

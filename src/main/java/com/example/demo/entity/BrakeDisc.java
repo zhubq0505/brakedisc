@@ -12,8 +12,26 @@ public class BrakeDisc {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "lx_code")
+    private String lxCode;
+
+    @Column(name = "price")
+    private Double price;
+
+    @Column(name = "profit")
+    private Double profit;
+
+    @Column(name = "double_metal_code")
+    private String doubleMetalCode;
+
+    @Column(name = "double_disc_price")
+    private Double doubleDiscPrice;
+
+    @Column(name = "double_disc_profit")
+    private Double doubleDiscProfit;
+
+    @Column(name = "double_brand_agent_price")
+    private Double doubleBrandAgentPrice;
 
     @Column(name = "car_series")
     private String carSeries;
@@ -92,4 +110,7 @@ public class BrakeDisc {
 
     @Column(name = "shengdi_code")
     private String shengdiCode;
+
+    @Column(name = "shengdi_code2")
+    private String shengdiCode2;
 }

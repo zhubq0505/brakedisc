@@ -79,7 +79,7 @@ public class BrakeDiscController {
     @GetMapping("/test")
     public ResponseEntity<BrakeDisc> createTestData() {
         BrakeDisc test = new BrakeDisc();
-        test.setCode("TEST001");
+        test.setLxCode("TEST001");
         test.setCarSeries("测试车系");
         test.setCarModel("测试车型");
         test.setPosition("前");

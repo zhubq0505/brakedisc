@@ -13,10 +13,11 @@ import java.util.List;
 @Repository
 public interface BrakeDiscRepository extends JpaRepository<BrakeDisc, Long> {
 
-    List<BrakeDisc> findByCodeContaining(String code);
+    List<BrakeDisc> findByLxCodeContaining(String lxCode);
 
     @Query("SELECT b FROM BrakeDisc b WHERE " +
-           "b.code LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.lxCode LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.doubleMetalCode LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe1 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe2 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe3 LIKE CONCAT('%', :keyword, '%') OR " +
@@ -30,11 +31,13 @@ public interface BrakeDiscRepository extends JpaRepository<BrakeDisc, Long> {
            "b.oe11 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.ek25 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.ek1 LIKE CONCAT('%', :keyword, '%') OR " +
-           "b.shengdiCode LIKE CONCAT('%', :keyword, '%')")
+           "b.shengdiCode LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.shengdiCode2 LIKE CONCAT('%', :keyword, '%')")
     List<BrakeDisc> search(@Param("keyword") String keyword);
 
     @Query("SELECT b FROM BrakeDisc b WHERE " +
-           "b.code LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.lxCode LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.doubleMetalCode LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe1 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe2 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.oe3 LIKE CONCAT('%', :keyword, '%') OR " +
@@ -48,6 +51,7 @@ public interface BrakeDiscRepository extends JpaRepository<BrakeDisc, Long> {
            "b.oe11 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.ek25 LIKE CONCAT('%', :keyword, '%') OR " +
            "b.ek1 LIKE CONCAT('%', :keyword, '%') OR " +
-           "b.shengdiCode LIKE CONCAT('%', :keyword, '%')")
+           "b.shengdiCode LIKE CONCAT('%', :keyword, '%') OR " +
+           "b.shengdiCode2 LIKE CONCAT('%', :keyword, '%')")
     Page<BrakeDisc> searchPageable(@Param("keyword") String keyword, Pageable pageable);
 }
