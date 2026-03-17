@@ -153,6 +153,7 @@
                         <th>LX编号</th>
                         <th>Price</th>
                         <th>Profit</th>
+                        <th>重量</th>
                         <th>双金属编号</th>
                         <th>双光盘价</th>
                         <th>双光盘利润</th>
@@ -161,7 +162,6 @@
                         <th>车型</th>
                         <th>位置</th>
                         <th>类型</th>
-                        <th>重量</th>
                         <th>表面处理</th>
                         <th>工艺</th>
                         <th>大外圆</th>
@@ -228,6 +228,10 @@
                             <input type="number" step="0.001" id="profit">
                         </div>
                         <div class="form-group">
+                            <label>重量</label>
+                            <input type="number" step="0.01" id="weight">
+                        </div>
+                        <div class="form-group">
                             <label>双金属编号</label>
                             <input type="text" id="doubleMetalCode">
                         </div>
@@ -258,10 +262,6 @@
                         <div class="form-group">
                             <label>类型</label>
                             <input type="text" id="type">
-                        </div>
-                        <div class="form-group">
-                            <label>重量</label>
-                            <input type="number" step="0.01" id="weight">
                         </div>
                         <div class="form-group">
                             <label>表面处理</label>
@@ -497,6 +497,7 @@
                     <div class="detail-item"><div class="detail-label">LX编号</div><div class="detail-value">${item.lxCode || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">Price</div><div class="detail-value">${item.price != null ? item.price.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">Profit</div><div class="detail-value">${item.profit != null ? item.profit.toFixed(3) : '-'}</div></div>
+                    <div class="detail-item"><div class="detail-label">重量</div><div class="detail-value">${item.weight != null ? item.weight.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">双金属编号</div><div class="detail-value">${item.doubleMetalCode || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">双光盘价</div><div class="detail-value">${item.doubleDiscPrice != null ? item.doubleDiscPrice.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">双光盘利润</div><div class="detail-value">${item.doubleDiscProfit != null ? item.doubleDiscProfit.toFixed(2) : '-'}</div></div>
@@ -505,7 +506,6 @@
                     <div class="detail-item"><div class="detail-label">车型</div><div class="detail-value">${item.carModel || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">位置</div><div class="detail-value">${item.position || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">类型</div><div class="detail-value">${item.type || '-'}</div></div>
-                    <div class="detail-item"><div class="detail-label">重量</div><div class="detail-value">${item.weight != null ? item.weight.toFixed(2) : '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">表面处理</div><div class="detail-value">${item.surfaceTreatment || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">工艺</div><div class="detail-value">${item.process || '-'}</div></div>
                     <div class="detail-item"><div class="detail-label">大外圆</div><div class="detail-value">${item.outerDiameter != null ? item.outerDiameter.toFixed(1) : '-'}</div></div>
