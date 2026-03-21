@@ -105,6 +105,12 @@ public class BrakeDiscService {
     }
 
     @Transactional
+    public void deleteAll() {
+        repository.deleteAll();
+        repository.resetAutoIncrement();
+    }
+
+    @Transactional
     public List<BrakeDisc> importFromExcel(MultipartFile file) throws IOException {
         List<BrakeDisc> discs = new ArrayList<>();
         try (InputStream is = file.getInputStream();

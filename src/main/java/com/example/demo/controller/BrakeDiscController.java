@@ -66,6 +66,12 @@ public class BrakeDiscController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll() {
+        service.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/import")
     public ResponseEntity<List<BrakeDisc>> importExcel(@RequestParam("file") MultipartFile file) {
         try {

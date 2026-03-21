@@ -4,6 +4,7 @@ import com.example.demo.entity.BrakeDisc;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -54,4 +55,8 @@ public interface BrakeDiscRepository extends JpaRepository<BrakeDisc, Long> {
            "b.shengdiCode LIKE CONCAT('%', :keyword, '%') OR " +
            "b.shengdiCode2 LIKE CONCAT('%', :keyword, '%')")
     Page<BrakeDisc> searchPageable(@Param("keyword") String keyword, Pageable pageable);
+
+    @Modifying
+    @Query(value = "ALTER TABLE brake_disc ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
+    void resetAutoIncrement();
 }
