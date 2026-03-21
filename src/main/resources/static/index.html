@@ -639,6 +639,13 @@
 
         loadData();
 
+        // 搜索输入框支持回车键
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                search();
+            }
+        });
+
         // 清空数据确认弹窗
         function showClearAllConfirm() {
             // 创建弹窗覆盖层
