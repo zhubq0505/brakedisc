@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  brakedisc:
+    build: .
+    container_name: brakedisc-app
+    ports:
+      - "8080:8080"
+    volumes:
+      # 持久化数据目录
+      - ./data:/app/data
+      # 日志目录
+      - ./logs:/app/logs
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:./data/brakedisc;DB_CLOSE_ON_EXIT=FALSE
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+    restart: unless-stopped
+    networks:
+      - brakedisc-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  brakedisc-network:
+    driver: bridge
